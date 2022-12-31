@@ -1,4 +1,9 @@
 /**
+ * DONT FOEGET TO DELETE IMPORT - ONLY FOR PRINTING!
+ */
+import java.util.Arrays;
+
+/**
  * FibonacciHeap
  *
  * An implementation of a Fibonacci Heap over integers.
@@ -18,7 +23,7 @@ public class FibonacciHeap
     /**
      * constractor - delete before submitting
      */
-    public void FibonacciHeap(){
+    public FibonacciHeap(){
         this.min = null;
         this.firstRoot = null;
         this.lastRoot = null;
@@ -26,6 +31,71 @@ public class FibonacciHeap
         this.marked = 0;
         this.trees = 0;
     }
+
+    /**
+     * print methods - delete before submitting
+     */
+    public void printFibHeap(){
+        System.out.println("Tree's details: ");
+        System.out.println("• Is empty? - " + this.isEmpty());
+        System.out.println("• Min node - " + this.min.getKey());
+        System.out.println("• Tree's size - " + this.size());
+        System.out.println("• Number of marked nodes - " + this.marked);
+        System.out.println("• Number of non-marked nodes - " + this.nonMarked());
+        System.out.println("• Potential function value - " + this.potential());
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("The tree itself: ");
+        HeapNode x = this.firstRoot;
+        int treeNum = 0;
+        while (x != null){
+            System.out.println("---------");
+            System.out.println("Tree number - " + treeNum + ":");
+            this.printBinomialTree(x);
+            System.out.println("The nodes' details: ");
+            this.printBinomialTreeDetails(x);
+            x = x.next;
+            treeNum++;
+        }
+    }
+
+    public void printBinomialTreeDetails(HeapNode root){
+        HeapNode x = root;
+        int depth = 0;
+        while (x != null){
+            System.out.println("The tree level - " + depth);
+            x.printNode();
+            while(x.next != null){
+                x = x.next;
+                x.printNode();
+            }
+            x = x.child;
+            depth++;
+        }
+    }
+
+    public void printBinomialTree(HeapNode root){
+        HeapNode x = root;
+        int depth = 0;
+        int[][] tree = new int[root.rank][root.rank];
+        while (x != null){
+            int[] level = new int[root.rank];
+            int index = 0;
+            while(x.next != null){
+                level[index] = x.getKey();
+                index++;
+                x = x.next;
+            }
+            tree[depth] = level;
+            x = x.child;
+            depth++;
+        }
+        for (int[] ints : tree) {
+            System.out.println(Arrays.toString(ints));
+            System.out.println("|");
+            System.out.println("v");
+        }
+    }
+
 
     /**
      * public boolean isEmpty()
@@ -224,5 +294,19 @@ public class FibonacciHeap
     	public int getKey() {
             return this.key;
     	}
+
+        // delete before submitting
+        public void printNode() {
+            System.out.println("The Node - " + this.key +":");
+            System.out.println("• Rank - " + this.rank);
+            System.out.println("• Is marked? - " + this.mark);
+        }
+    }
+
+    // delete before submitting
+    public static void main(String[] args) {
+        FibonacciHeap fib = new FibonacciHeap();
+        FibonacciHeap.HeapNode node = new FibonacciHeap.HeapNode(1);
+        fib.printFibHeap();
     }
 }
