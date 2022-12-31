@@ -5,16 +5,36 @@
  */
 public class FibonacciHeap
 {
+    private HeapNode min;
+    private HeapNode firstRoot;
+    private HeapNode lastRoot;
+    private int size;
+    private int marked;
+    private int trees;
 
-   /**
-    * public boolean isEmpty()
-    *
-    * Returns true if and only if the heap is empty.
-    *   
-    */
-    public boolean isEmpty()
-    {
-    	return false; // should be replaced by student code
+    static int links = 0;
+    static int cuts = 0;
+
+    /**
+     * constractor - delete before submitting
+     */
+    public void FibonacciHeap(){
+        this.min = null;
+        this.firstRoot = null;
+        this.lastRoot = null;
+        this.size = 0;
+        this.marked = 0;
+        this.trees = 0;
+    }
+
+    /**
+     * public boolean isEmpty()
+     *
+     * Returns true if and only if the heap is empty.
+     *
+     */
+    public boolean isEmpty(){
+        return this.size == 0;
     }
 		
    /**
@@ -50,7 +70,7 @@ public class FibonacciHeap
     */
     public HeapNode findMin()
     {
-    	return new HeapNode(678);// should be replaced by student code
+    	return this.min;
     } 
     
    /**
@@ -72,7 +92,7 @@ public class FibonacciHeap
     */
     public int size()
     {
-    	return -123; // should be replaced by student code
+    	return this.size;
     }
     	
     /**
@@ -118,7 +138,7 @@ public class FibonacciHeap
     */
     public int nonMarked() 
     {    
-        return -232; // should be replaced by student code
+        return this.size - this.marked;
     }
 
    /**
@@ -132,7 +152,7 @@ public class FibonacciHeap
     */
     public int potential() 
     {    
-        return -234; // should be replaced by student code
+        return this.trees + 2 * this.marked;
     }
 
    /**
@@ -145,7 +165,7 @@ public class FibonacciHeap
     */
     public static int totalLinks()
     {    
-    	return -345; // should be replaced by student code
+    	return links;
     }
 
    /**
@@ -157,7 +177,7 @@ public class FibonacciHeap
     */
     public static int totalCuts()
     {    
-    	return -456; // should be replaced by student code
+    	return cuts;
     }
 
      /**
@@ -184,13 +204,25 @@ public class FibonacciHeap
     public static class HeapNode{
 
     	public int key;
+        public int rank;
+        public boolean mark;
+        public HeapNode child;
+        public HeapNode next;
+        public HeapNode prev;
+        public HeapNode parent;
 
     	public HeapNode(int key) {
-    		this.key = key;
+            this.key = key;
+    		this.rank = 0;
+            this.mark = false;
+            this.child = null;
+            this.next = null;
+            this.prev = null;
+            this.parent = null;
     	}
 
     	public int getKey() {
-    		return this.key;
+            return this.key;
     	}
     }
 }
