@@ -1,7 +1,6 @@
 /**
  * DONT FOEGET TO DELETE IMPORT - ONLY FOR PRINTING!
  */
-import java.util.Arrays;
 
 /**
  * FibonacciHeap
@@ -36,7 +35,7 @@ public class FibonacciHeap
      * print methods - delete before submitting
      */
     public void printFibHeap(){
-        System.out.println("Tree's details: ");
+        System.out.println("Heap's details: ");
         System.out.println("• Is empty? - " + this.isEmpty());
         System.out.println("• Min node - " + this.min.getKey());
         System.out.println("• Tree's size - " + this.size());
@@ -44,56 +43,57 @@ public class FibonacciHeap
         System.out.println("• Number of non-marked nodes - " + this.nonMarked());
         System.out.println("• Potential function value - " + this.potential());
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println("The tree itself: ");
+        System.out.println("The heap itself: ");
         HeapNode x = this.firstRoot;
-        int treeNum = 0;
-        while (x != null){
+        this.printHeap(x);
+        System.out.println("");
+        System.out.println("The nodes' details: ");
+        int treenum = 0;
+        while (x != null) {
             System.out.println("---------");
-            System.out.println("Tree number - " + treeNum + ":");
-            this.printBinomialTree(x);
-            System.out.println("The nodes' details: ");
-            this.printBinomialTreeDetails(x);
+            System.out.println("Tree number "+ treenum + ":");
+            this.printTreeDetails(x);
             x = x.next;
-            treeNum++;
+            treenum++;
         }
     }
 
-    public void printBinomialTreeDetails(HeapNode root){
-        HeapNode x = root;
-        int depth = 0;
+    public void printTreeDetails(HeapNode root){
+        System.out.println("The tree's level - 0:");
+        root.printNode();
+        HeapNode x = root.child;
+        int depth = 1;
         while (x != null){
-            System.out.println("The tree level - " + depth);
+            System.out.println("The tree's level - " + depth + ":");
             x.printNode();
+            HeapNode start = x;
             while(x.next != null){
                 x = x.next;
                 x.printNode();
             }
-            x = x.child;
+            x = start.child;
             depth++;
         }
     }
-
-    public void printBinomialTree(HeapNode root){
-        HeapNode x = root;
-        int depth = 0;
-        int[][] tree = new int[root.rank][root.rank];
-        while (x != null){
-            int[] level = new int[root.rank];
-            int index = 0;
-            while(x.next != null){
-                level[index] = x.getKey();
-                index++;
-                x = x.next;
-            }
-            tree[depth] = level;
-            x = x.child;
-            depth++;
-        }
-        for (int[] ints : tree) {
-            System.out.println(Arrays.toString(ints));
-            System.out.println("|");
-            System.out.println("v");
-        }
+    public void printHeap(HeapNode root){
+        this.printHeapRec(root,0);
+    }
+    private void printHeapRec(HeapNode heapNode, int level){
+        if (heapNode == null)
+            return;
+        if (heapNode.parent == null)
+            System.out.println("");
+        for (int i = 0; i < level-1; i++)
+            System.out.print("| ");
+        if (level !=0)
+            System.out.print("|_");
+        System.out.print(heapNode.getKey());
+        if (heapNode.mark)
+            System.out.println("*");
+        else
+            System.out.println("");
+        this.printHeapRec(heapNode.child,level+1);
+        this.printHeapRec(heapNode.next,level);
     }
 
 
@@ -106,18 +106,56 @@ public class FibonacciHeap
     public boolean isEmpty(){
         return this.size == 0;
     }
-		
-   /**
-    * public HeapNode insert(int key)
-    *
-    * Creates a node (of type HeapNode) which contains the given key, and inserts it into the heap.
-    * The added key is assumed not to already belong to the heap.  
-    * 
-    * Returns the newly created node.
-    */
+
+    /**
+     * public HeapNode insert(int key)
+     *
+     * Creates a node (of type HeapNode) which contains the given key, and inserts it into the heap.
+     * The added key is assumed not to already belong to the heap.
+     *
+     * Returns the newly created node.
+     */
     public HeapNode insert(int key)
-    {    
-    	return new HeapNode(key); // should be replaced by student code
+    {
+        HeapNode node = new HeapNode(key);
+        if (this.isEmpty()){
+            this.firstRoot = node;
+            this.lastRoot = node;
+            this.min = node;
+        }
+        else{
+            // inserting the new node as the first one (to the left)
+            this.firstRoot.prev = node; // connect as the prev of the fist node
+            node.next = this.firstRoot; // connect the first node as its next
+            this.firstRoot = node; // updating first
+            // updating the min node if needed
+            if(key < this.min.getKey())
+                this.min = node;
+        }
+        // adding 1 to the size and to the number of trees
+        this.trees++;
+        this.size++;
+    	return node;
+    }
+
+
+    /**
+     * helper func - search and update new min and update it
+     */
+    private void searchAndUpdateNewMin() {
+        HeapNode x = this.firstRoot;
+        HeapNode minNode = x;
+        if (!this.isEmpty()) {
+            int minKey = x.getKey();
+            while (x.next != null) {
+                x = x.next;
+                if (x.getKey() < minKey) {
+                    minNode = x;
+                    minKey = x.getKey();
+                }
+            }
+        }
+        this.min = minNode; //update the min node
     }
 
    /**
@@ -297,16 +335,17 @@ public class FibonacciHeap
 
         // delete before submitting
         public void printNode() {
-            System.out.println("The Node - " + this.key +":");
-            System.out.println("• Rank - " + this.rank);
-            System.out.println("• Is marked? - " + this.mark);
+            System.out.println("• Node's Key = " + this.key +", Rank = " +
+                    this.rank + ", is marked? - " + this.mark);
         }
     }
 
     // delete before submitting
     public static void main(String[] args) {
         FibonacciHeap fib = new FibonacciHeap();
-        FibonacciHeap.HeapNode node = new FibonacciHeap.HeapNode(1);
-        //fib.printFibHeap();
+        fib.insert(1);
+        fib.insert(3);
+        fib.insert(0);
+        fib.printFibHeap();
     }
 }
