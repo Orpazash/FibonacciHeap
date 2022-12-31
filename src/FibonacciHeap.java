@@ -307,6 +307,6 @@ public class FibonacciHeap
     public static void main(String[] args) {
         FibonacciHeap fib = new FibonacciHeap();
         FibonacciHeap.HeapNode node = new FibonacciHeap.HeapNode(1);
-        fib.printFibHeap();
+        //fib.printFibHeap();
     }
 }
