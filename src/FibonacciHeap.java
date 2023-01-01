@@ -1,7 +1,6 @@
 /**
  * DONT FOEGET TO DELETE IMPORT - ONLY FOR PRINTING!
  */
-import java.util.Arrays;
 
 /**
  * FibonacciHeap
@@ -43,7 +42,6 @@ public class FibonacciHeap
         System.out.println("• Number of marked nodes - " + this.marked);
         System.out.println("• Number of non-marked nodes - " + this.nonMarked());
         System.out.println("• Potential function value - " + this.potential());
-        System.out.println("• Counter repeats array - " + Arrays.toString(this.countersRep()));
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("The heap itself: ");
         HeapNode x = this.firstRoot;
@@ -214,29 +212,8 @@ public class FibonacciHeap
     */
     public int[] countersRep()
     {
-        // if empty - return empty array
-        if (this.isEmpty())
-            return new int[0];
-        int[] helpArr = new int[this.trees];
-        int maxRank = -1;
-        HeapNode x = this.firstRoot;
-        // going through all the trees and updating the counter
-        while(x!=null){
-            int rank = x.rank;
-            helpArr[rank]++;
-            //updating the maxRank
-            if (rank > maxRank)
-                maxRank = rank;
-            x = x.next;
-        }
-        // if the max rank in as the length of helpArr, return it
-        if (maxRank == this.trees)
-            return helpArr;
-        // else, creating shorter array (as the maxRank) and return it
-        int[] repCounter = new int[maxRank+1];
-        for (int i=0; i < repCounter.length; i++)
-            repCounter[i] = helpArr[i];
-        return repCounter; //	 to be replaced by student code
+    	int[] arr = new int[100];
+        return arr; //	 to be replaced by student code
     }
 	
    /**
@@ -367,7 +344,7 @@ public class FibonacciHeap
     public static void main(String[] args) {
         FibonacciHeap fib = new FibonacciHeap();
         fib.insert(1);
-        fib.insert(2);
+        fib.insert(3);
         fib.insert(0);
         fib.printFibHeap();
     }
