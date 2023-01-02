@@ -1,7 +1,8 @@
 /**
  * DON'T FORGET TO DELETE IMPORT - ONLY FOR PRINTING!
  */
-import java.util.Arrays;
+
+import java.util.*;
 
 /**
  * FibonacciHeap
@@ -57,13 +58,15 @@ public class FibonacciHeap
             this.firstRoot = node;
             this.lastRoot = node;
             this.min = node;
+            node.next = node;
+            node.prev = node;
         }
         else{
             // inserting the new node as the first one (to the left)
-            this.firstRoot.prev = node; // connect as the prev of the first node
             node.next = this.firstRoot; // connect the first node as its next
-            node.prev = this.lastRoot; // sets the first node's prev to the last node
-            this.lastRoot.next = node; // connect the first node to last's next
+            node.prev = this.firstRoot.prev; // sets the first node's prev to the last node *OR added
+            this.firstRoot.prev.next = node; // connect the first node to last's next  *OR added
+            this.firstRoot.prev = node; // connect as the prev of the fist node
             this.firstRoot = node; // updating first
             // updating the min node if needed
             if(key < this.min.getKey())
@@ -102,11 +105,109 @@ public class FibonacciHeap
     * Deletes the node containing the minimum key.
     *
     */
-    public void deleteMin()
-    {
-     	return; // should be replaced by student code
-     	
+    public void deleteMin() {
+        if (this.min.child == null) {
+            min.next.prev = min.prev;
+            min.prev.next = min.next; // could create self next and self prev, if there are less than 4 root nodes
+            if (this.min == this.firstRoot) {
+                this.firstRoot = min.next;
+            }
+            if (this.min == this.lastRoot) {
+                this.lastRoot = this.min.prev;
+            }
+
+        }
+        else {
+            this.min.child.prev.next = min.next;
+            this.min.next.prev = min.child.prev;
+            this.min.child.prev = min.prev;
+            this.min.prev.next = min.child;
+        }
+        this.successiveLinking();
+
+        this.searchAndUpdateNewMin();
     }
+    /**
+     * helper func - successive Linking after delete min
+     */
+
+    public void successiveLinking() {
+        // new list the size of log(amount of trees)
+        HeapNode[] bucketList = new HeapNode[(int) Math.floor(Math.log((double) this.size)/ Math.log(2)) + 1];
+        HeapNode curr = this.firstRoot;
+        Set<HeapNode> in_bucket = new HashSet<>();
+        do {
+            while (bucketList[curr.rank] != null) { // as long as there is a tree with same rank in list
+                int rank = curr.rank;
+                // linking the current tree with the one in the list, and saving the new one as current
+                in_bucket.remove(bucketList[rank]);
+                curr = link(curr,bucketList[rank]);
+                // emptying the list at the index that was linked
+                bucketList[rank] = null;
+            }
+            in_bucket.add(curr);
+            bucketList[curr.rank] = curr;
+            curr = curr.next;
+        } while (!in_bucket.contains(curr));
+
+        // finding the first (also smallest) root in list, adding it to heap, storing the index of it as i
+        int i;
+        HeapNode prevNode = null;
+        HeapNode currentNode = null;
+        for ( i = 0; i<bucketList.length; i++) {
+            if (bucketList[i] != null) {
+                this.firstRoot = bucketList[i];
+                prevNode = this.firstRoot;
+                break;
+            }
+        }
+
+        // going over the rest of the list (from i) and adding roots in order, if bucketList[j] is not null
+        for (int j = i; j < bucketList.length; j++) {
+            if (bucketList[j] != null) {
+                currentNode = bucketList[j];
+                currentNode.mark = false;
+                prevNode.next = currentNode;
+                currentNode.prev = prevNode;
+            }
+        prevNode = currentNode;
+        }
+
+        // adding the last node we saw as the last
+        this.lastRoot = prevNode;
+        prevNode.next = this.firstRoot;
+        this.firstRoot.prev = prevNode;
+    }
+
+    /**
+     * helper func - linking to trees, returning the root of the linked tree
+     */
+    public HeapNode link(HeapNode tree1, HeapNode tree2) {
+        // if tree2's key is smaller than tree1's, switch
+        if (tree1.getKey() > tree2.getKey()) {
+            HeapNode temp = tree1;
+            tree1 = tree2;
+            tree2 = temp;
+        }
+        // removing tree2 from 'root list'
+        tree2.prev.next = tree2.next;
+        tree2.next.prev = tree2.prev;
+
+        // linking tree2 as the new left son of tree1
+        if (tree1.child != null) {
+            tree1.child.prev = tree2;
+            tree2.next = tree1.child;
+        } else {
+            tree1.child = tree2;
+            tree1.child.next = tree2;
+            tree1.child.prev = tree2;
+        }
+        tree1.rank += 1;
+
+        return tree1;
+    }
+
+
 
    /**
     * public HeapNode findMin()
