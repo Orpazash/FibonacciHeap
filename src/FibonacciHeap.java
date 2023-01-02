@@ -45,7 +45,8 @@ public class FibonacciHeap
             System.out.println("• First node - " + this.firstRoot.getKey());
             System.out.println("• Last node - " + this.lastRoot.getKey());
         }
-        System.out.println("• Tree's size - " + this.size());
+        System.out.println("• Heap's size - " + this.size());
+        System.out.println("• Number of trees in the heap - " + this.trees);
         System.out.println("• Number of marked nodes - " + this.marked);
         System.out.println("• Number of non-marked nodes - " + this.nonMarked());
         System.out.println("• Potential function value - " + this.potential());
@@ -90,8 +91,6 @@ public class FibonacciHeap
     private void printHeapRec(HeapNode heapNode, int level){
         if (heapNode == null)
             return;
-        if (heapNode.parent == null)
-            System.out.println("");
         for (int i = 0; i < level-1; i++)
             System.out.print("| ");
         if (level !=0)
@@ -225,7 +224,7 @@ public class FibonacciHeap
         if (this.isEmpty()) {
             return new int[0];
         } else {
-            int[] helpArr = new int[this.trees];
+            int[] helpArr = new int[this.size()];
             int maxRank = -1;
             HeapNode x = this.firstRoot;
             while (x != null) {
@@ -274,8 +273,12 @@ public class FibonacciHeap
         x.key = x.key-delta;
         // if x is not the root (if it is the root - there wasn't violation
         // ot if there was a violation of the heap rule - doing cascading cut
-        if(x.parent!= null && x.key > x.parent.key)
-            cascadingCut(x, x.parent);
+        if(x.parent!= null && x.key < x.parent.key)
+            cascadingCut(x.parent, x);
+        // updating min node if needed
+        if(x.key < this.min.key){
+            this.min = x;
+        }
     }
 
     /**
@@ -291,7 +294,7 @@ public class FibonacciHeap
                 parent.mark = true;
             // if was marked - cut it from its parent
             else{
-                cascadingCut(parent, parent.parent);
+                cascadingCut(parent.parent, parent);
             }
         }
     }
@@ -303,9 +306,11 @@ public class FibonacciHeap
     {
         // disconnect from the parent
         nodeToCut.parent = null;
-        // the node is not marked anymore
-        nodeToCut.mark = false;
-        marked--;
+        // the node is not marked anymore (if it was)
+        if (nodeToCut.mark == true){
+            nodeToCut.mark = false;
+            marked--;
+        }
         // the parent lose one child - it is marked now and is rank is one down
         parent.rank--;
 
@@ -315,7 +320,8 @@ public class FibonacciHeap
         // else, it means it as prev and next and we connect them
         else {
             nodeToCut.prev.next = nodeToCut.next;
-            nodeToCut.next.prev = nodeToCut.prev;
+            if(nodeToCut.next !=null)
+                nodeToCut.next.prev = nodeToCut.prev;
             nodeToCut.prev = null;
         }
         // inserting the cut node to the start of the tree sequence
@@ -433,9 +439,11 @@ public class FibonacciHeap
     // delete before submitting
     public static void main(String[] args) {
         FibonacciHeap fib = new FibonacciHeap();
-        fib.insert(1);
+        HeapNode node1 = new HeapNode(4);
+        HeapNode node2 = new HeapNode(5);
+        HeapNode node3 = new HeapNode(7);
         fib.insert(2);
-        fib.insert(0);
+        fib.insert(3);
         fib.printFibHeap();
     }
 }
