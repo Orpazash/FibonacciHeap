@@ -1,6 +1,7 @@
 /**
- * DONT FOEGET TO DELETE IMPORT - ONLY FOR PRINTING!
+ * DON'T FORGET TO DELETE IMPORT - ONLY FOR PRINTING!
  */
+import java.util.Arrays;
 
 /**
  * FibonacciHeap
@@ -37,24 +38,32 @@ public class FibonacciHeap
     public void printFibHeap(){
         System.out.println("Heap's details: ");
         System.out.println("• Is empty? - " + this.isEmpty());
-        System.out.println("• Min node - " + this.min.getKey());
+        if (this.isEmpty())
+            System.out.println("• Min,first and last nodes doesn't exists because the heap is empty");
+        else {
+            System.out.println("• Min node - " + this.min.getKey());
+            System.out.println("• First node - " + this.firstRoot.getKey());
+            System.out.println("• Last node - " + this.lastRoot.getKey());
+        }
         System.out.println("• Tree's size - " + this.size());
         System.out.println("• Number of marked nodes - " + this.marked);
         System.out.println("• Number of non-marked nodes - " + this.nonMarked());
         System.out.println("• Potential function value - " + this.potential());
+        System.out.println("• Counter repeats array - " + Arrays.toString(this.countersRep()));
+
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("The heap itself: ");
         HeapNode x = this.firstRoot;
         this.printHeap(x);
         System.out.println("");
         System.out.println("The nodes' details: ");
-        int treenum = 0;
+        int treeNum = 0;
         while (x != null) {
             System.out.println("---------");
-            System.out.println("Tree number "+ treenum + ":");
+            System.out.println("Tree number "+ treeNum + ":");
             this.printTreeDetails(x);
             x = x.next;
-            treenum++;
+            treeNum++;
         }
     }
 
@@ -147,6 +156,7 @@ public class FibonacciHeap
         HeapNode minNode = x;
         if (!this.isEmpty()) {
             int minKey = x.getKey();
+            // searching the min between the trees' roots
             while (x.next != null) {
                 x = x.next;
                 if (x.getKey() < minKey) {
@@ -207,13 +217,38 @@ public class FibonacciHeap
     * public int[] countersRep()
     *
     * Return an array of counters. The i-th entry contains the number of trees of order i in the heap.
-    * (Note: The size of of the array depends on the maximum order of a tree.)  
+    * (Note: The size of the array depends on the maximum order of a tree.)
     * 
     */
-    public int[] countersRep()
-    {
-    	int[] arr = new int[100];
-        return arr; //	 to be replaced by student code
+    public int[] countersRep() {
+        // if the heap is empty - return empty array
+        if (this.isEmpty()) {
+            return new int[0];
+        } else {
+            int[] helpArr = new int[this.trees];
+            int maxRank = -1;
+            HeapNode x = this.firstRoot;
+            while (x != null) {
+                int rank = x.rank;
+                helpArr[rank]++;
+                // updating the maxRank - affect the length of the array that need to be returned
+                if (rank > maxRank) {
+                    maxRank = rank;
+                }
+                x = x.next;
+            }
+            // if the current length of the array is okay - return it
+            if (maxRank == this.trees) {
+                return helpArr;
+            } else //else, creating and returning smaller array
+            {
+                int[] repCounter = new int[maxRank + 1];
+                for (int i = 0; i < repCounter.length; ++i) {
+                    repCounter[i] = helpArr[i];
+                }
+                return repCounter;
+            }
+        }
     }
 	
    /**
@@ -344,7 +379,7 @@ public class FibonacciHeap
     public static void main(String[] args) {
         FibonacciHeap fib = new FibonacciHeap();
         fib.insert(1);
-        fib.insert(3);
+        fib.insert(2);
         fib.insert(0);
         fib.printFibHeap();
     }
