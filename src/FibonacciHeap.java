@@ -270,9 +270,64 @@ public class FibonacciHeap
     * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
     */
     public void decreaseKey(HeapNode x, int delta)
-    {    
-    	return; // should be replaced by student code
+    {
+        x.key = x.key-delta;
+        // if x is not the root (if it is the root - there wasn't violation
+        // ot if there was a violation of the heap rule - doing cascading cut
+        if(x.parent!= null && x.key > x.parent.key)
+            cascadingCut(x, x.parent);
     }
+
+    /**
+     * helper func - doing the cascading cut process
+     */
+    private void cascadingCut(HeapNode parent, HeapNode nodeToCut)
+    {
+        this.cut(parent,nodeToCut);
+        // if parent isn't the root
+        if (parent.parent != null){
+            // if wasn't marked - mark it
+            if(parent.mark == false)
+                parent.mark = true;
+            // if was marked - cut it from its parent
+            else{
+                cascadingCut(parent, parent.parent);
+            }
+        }
+    }
+
+    /**
+    * helper func - doing the cut itself of nodeToCut from its parent
+     */
+    private void cut(HeapNode parent, HeapNode nodeToCut)
+    {
+        // disconnect from the parent
+        nodeToCut.parent = null;
+        // the node is not marked anymore
+        nodeToCut.mark = false;
+        marked--;
+        // the parent lose one child - it is marked now and is rank is one down
+        parent.rank--;
+
+        // if nodeToCut == parent.child, its child is now nodeToCut.next
+        if (nodeToCut == parent.child)
+            parent.child = nodeToCut.next;
+        // else, it means it as prev and next and we connect them
+        else {
+            nodeToCut.prev.next = nodeToCut.next;
+            nodeToCut.next.prev = nodeToCut.prev;
+            nodeToCut.prev = null;
+        }
+        // inserting the cut node to the start of the tree sequence
+        nodeToCut.next = this.firstRoot;
+        this.firstRoot.prev = nodeToCut;
+        this.firstRoot = nodeToCut;
+        trees++;
+
+        // updating cut counter
+        cuts++;
+    }
+
 
    /**
     * public int nonMarked() 
