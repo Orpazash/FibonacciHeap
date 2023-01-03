@@ -1,6 +1,6 @@
 import java.util.Arrays;
 
-public class OurPrintTree {
+public class OurPrintHeap {
 
     public static void main(String[] args) {
         FibonacciHeap fib = new FibonacciHeap();
@@ -15,14 +15,11 @@ public class OurPrintTree {
         node2.next = node1;
         node1.next = node2;
         node1.prev = node2;
-        node3.next = node1;
-        node1.prev = node3;
-        node3.prev = node2;
-        node2.next = node3;
-        node3.parent = fib.firstRoot;
         node2.parent = fib.firstRoot;
-        fib.firstRoot.rank = 3;
-        fib.decreaseKey(node2, 4);
+        node3.parent = node1;
+        node1.child = node3;
+        fib.firstRoot.rank = 2;
+        node1.rank=1;
         printFibHeap(fib);
         //FiboHeapPrinter.printHeap(fib);
     }
