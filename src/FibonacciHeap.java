@@ -106,9 +106,19 @@ public class FibonacciHeap
     *
     */
     public void deleteMin() {
-        if (this.min.child == null) {
+        if (this.trees == 1) {  // if there is only one node in heap
+            this.firstRoot = null;
+            this.lastRoot = null;
+            this.min = null;
+        }
+
+        if (min.next == min) {  //if the minimal node is the only one in the root list
+            this.firstRoot = this.min.child;
+            this.lastRoot = this.min.child.prev;
+        }
+        if (this.min.child == null) {  //if min node has no children
             min.next.prev = min.prev;
-            min.prev.next = min.next; // could create self next and self prev, if there are less than 4 root nodes
+            min.prev.next = min.next;
             if (this.min == this.firstRoot) {
                 this.firstRoot = min.next;
             }
@@ -195,13 +205,18 @@ public class FibonacciHeap
 
         // linking tree2 as the new left son of tree1
         if (tree1.child != null) {
+            tree2.prev = tree1.child.prev;
             tree1.child.prev = tree2;
             tree2.next = tree1.child;
+            if(tree1.child.next == tree1.child) {
+                tree1.child.next = tree2;
+            }
+
         } else {
-            tree1.child = tree2;
-            tree1.child.next = tree2;
-            tree1.child.prev = tree2;
+            tree2.next = tree2;
+            tree2.prev = tree2;
         }
+        tree1.child = tree2;
         tree1.rank += 1;
 
         return tree1;
