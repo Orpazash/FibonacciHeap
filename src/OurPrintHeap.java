@@ -58,9 +58,14 @@ public class OurPrintHeap {
         }
     }
 
+    public static void printNode(FibonacciHeap.HeapNode node) {
+        System.out.println("• Node's Key = " + node.key +", Rank = " +
+                node.rank + ", is marked? - " + node.mark);
+    }
+
     public static void printTreeDetails(FibonacciHeap.HeapNode root){
         System.out.println("The tree's level - 0:");
-        root.printNode();
+        printNode(root);
         FibonacciHeap.HeapNode x = root.child;
         int depth = 1;
         // while child isn't null
@@ -68,7 +73,7 @@ public class OurPrintHeap {
             System.out.println("The tree's level - " + depth + ":");
             FibonacciHeap.HeapNode start = x; // saving the child to move to the next level
             do{
-                x.printNode();
+                printNode(x);
                 x = x.next;
             } while(x != start);
             x = start.child;
