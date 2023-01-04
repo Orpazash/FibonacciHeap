@@ -1,7 +1,7 @@
 /**
  * DON'T FORGET TO DELETE IMPORT - ONLY FOR PRINTING!
  */
-
+package fibHeap;
 import java.util.*;
 
 /**
@@ -18,8 +18,8 @@ public class FibonacciHeap
     public int marked;
     public int trees;
 
-    static int links = 0;
-    static int cuts = 0;
+    public static int links = 0;
+    public static int cuts = 0;
 
     /**
      * constractor - delete before submitting
@@ -269,7 +269,7 @@ public class FibonacciHeap
         if (this.isEmpty()) {
             return new int[0];
         } else {
-            int[] helpArr = new int[this.size()]; //will work when size will be updated in delete min!
+            int[] helpArr = new int[this.size()+1]; //will work when size will be updated in delete min!
             int maxRank = -1;
             HeapNode x = this.firstRoot;
             do {

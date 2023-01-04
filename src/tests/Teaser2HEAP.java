@@ -1,3 +1,6 @@
+package tests;
+import fibHeap.FibonacciHeap;
+
 import java.util.TreeSet;
 
 class Tester2HEAP {

@@ -1,4 +1,5 @@
-//FibonacciHeap Tester
+package tests;
+import fibHeap.FibonacciHeap;
 
 import java.util.ArrayList;
 import java.util.Collections;
