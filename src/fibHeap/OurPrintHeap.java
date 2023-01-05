@@ -1,9 +1,13 @@
+import java.util.ArrayList;
 package fibHeap;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
 
 public class OurPrintHeap {
 
-    public static void main(String[] args) {
+
+    public static void orpazTest() {
         FibonacciHeap fib = new FibonacciHeap();
         FibonacciHeap.HeapNode node1 = new FibonacciHeap.HeapNode(4);
         FibonacciHeap.HeapNode node2 = new FibonacciHeap.HeapNode(5);
@@ -20,9 +24,100 @@ public class OurPrintHeap {
         node3.parent = node1;
         node1.child = node3;
         fib.firstRoot.rank = 2;
-        node1.rank=1;
+        node1.rank = 1;
         printFibHeap(fib);
         //FiboHeapPrinter.printHeap(fib);
+    }
+
+
+    public static void test_delete_min() {
+        FibonacciHeap fib2 = new FibonacciHeap();
+        int n = 40;
+        int key = 1;
+        for (int i=0; i<n/2; i++ ) {
+            fib2.insert(key);
+            fib2.insert(n-key);
+            key += 1;
+        }
+        printHeap(fib2, fib2.firstRoot);
+        System.out.println("------------------");
+        fib2.deleteMin();  // delete 1
+        printHeap(fib2, fib2.firstRoot);
+        System.out.println("------------------");
+        fib2.deleteMin();   // delete 2
+        printHeap(fib2, fib2.firstRoot);
+        System.out.println("------------------");
+        fib2.deleteMin();  // delete 3
+        printHeap(fib2, fib2.firstRoot);
+        System.out.println("------------------");
+        fib2.deleteMin();  // delete 3
+        printHeap(fib2, fib2.firstRoot);
+        System.out.println("------------------");
+
+    }
+
+    public static void test_meld() {
+        FibonacciHeap firstFib = new FibonacciHeap();
+        int n = 10;
+        int key = 1;
+        for (int i = 0; i < n; i++) {
+            firstFib.insert(key);
+            key += 1;
+        }
+        FibonacciHeap secondFib = new FibonacciHeap();
+        int m = 3;
+        int key2 = 20;
+        for (int i = 0; i < m; i++) {
+            secondFib.insert(key2);
+            key2 += 1;
+        }
+        firstFib.deleteMin();
+        secondFib.deleteMin();
+        printFibHeap(firstFib);
+        printFibHeap(secondFib);
+        firstFib.meld(secondFib);
+        printFibHeap(firstFib);
+    }
+    public static void rand_delete_test() {
+        Random rand = new Random(565);
+        ArrayList<Integer> numbers = new ArrayList<>();
+        FibonacciHeap fib = new FibonacciHeap();
+        int n = 10;
+        for (int i = 0; i < n; i++) {
+            numbers.add(i);
+        }
+        Collections.shuffle(numbers, rand);
+        for (int i = 0; i < n; i++) {
+            fib.insert(numbers.get(i));
+        }
+//        printFibHeap(fib);
+        for (int i = 0; i < n; i++) {
+            if (fib.findMin().getKey() != i) {
+                System.out.println("wrong " + i);
+                return;
+            }
+            fib.deleteMin();
+            printHeap(fib, fib.firstRoot);
+            System.out.println("-------------------------");
+
+        }
+    }
+
+
+
+
+
+
+        public static void main(String[] args) {
+//        orpazTest();
+//        test_delete_min();
+//        test_meld();
+        rand_delete_test();
+
+
+
+
+
     }
 
     /**
