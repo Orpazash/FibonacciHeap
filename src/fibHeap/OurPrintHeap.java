@@ -1,34 +1,47 @@
-import java.util.ArrayList;
 package fibHeap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
 public class OurPrintHeap {
 
+    static final int insertNum = 10;
+    static final int defaultSeed = 55;
 
-    public static void orpazTest() {
-        FibonacciHeap fib = new FibonacciHeap();
-        FibonacciHeap.HeapNode node1 = new FibonacciHeap.HeapNode(4);
-        FibonacciHeap.HeapNode node2 = new FibonacciHeap.HeapNode(5);
-        FibonacciHeap.HeapNode node3 = new FibonacciHeap.HeapNode(7);
-        fib.insert(2);
-        fib.insert(3);
-        fib.firstRoot.child = node1;
-        node1.parent = fib.firstRoot;
-        node2.prev = node1;
-        node2.next = node1;
-        node1.next = node2;
-        node1.prev = node2;
-        node2.parent = fib.firstRoot;
-        node3.parent = node1;
-        node1.child = node3;
-        fib.firstRoot.rank = 2;
-        node1.rank = 1;
-        printFibHeap(fib);
-        //FiboHeapPrinter.printHeap(fib);
+    public static void main(String[] args) {
+//        decrease_key_test();
+//        test_delete_min();
+//        test_meld();
+//        rand_delete_test();
+        kMinTest();
     }
 
+    public static FibonacciHeap random_insert() {
+        Random rand = new Random(defaultSeed);
+        ArrayList<Integer> numbers = new ArrayList<>();
+        FibonacciHeap fib = new FibonacciHeap();
+        for (int i = 0; i < insertNum; i++) {
+            numbers.add(i);
+        }
+        Collections.shuffle(numbers, rand);
+        for (int i = 0; i < insertNum; i++) {
+            fib.insert(numbers.get(i));
+        }
+        return fib;
+    }
+
+    public static void decrease_key_test() {
+        FibonacciHeap fib = random_insert();
+        fib.deleteMin();
+        printFibHeap(fib);
+        int index = 0;
+        while (fib.lastRoot.child != null && fib.lastRoot.child.child!=null) {
+            fib.decreaseKey(fib.lastRoot.child.child, fib.lastRoot.child.child.getKey()+index);
+            index++;
+            printFibHeap(fib);
+        }
+    }
 
     public static void test_delete_min() {
         FibonacciHeap fib2 = new FibonacciHeap();
@@ -53,7 +66,6 @@ public class OurPrintHeap {
         fib2.deleteMin();  // delete 3
         printHeap(fib2, fib2.firstRoot);
         System.out.println("------------------");
-
     }
 
     public static void test_meld() {
@@ -78,20 +90,11 @@ public class OurPrintHeap {
         firstFib.meld(secondFib);
         printFibHeap(firstFib);
     }
+
+
     public static void rand_delete_test() {
-        Random rand = new Random(565);
-        ArrayList<Integer> numbers = new ArrayList<>();
-        FibonacciHeap fib = new FibonacciHeap();
-        int n = 10;
-        for (int i = 0; i < n; i++) {
-            numbers.add(i);
-        }
-        Collections.shuffle(numbers, rand);
-        for (int i = 0; i < n; i++) {
-            fib.insert(numbers.get(i));
-        }
-//        printFibHeap(fib);
-        for (int i = 0; i < n; i++) {
+        FibonacciHeap fib = random_insert();
+        for (int i = 0; i < fib.size; i++) {
             if (fib.findMin().getKey() != i) {
                 System.out.println("wrong " + i);
                 return;
@@ -103,26 +106,18 @@ public class OurPrintHeap {
         }
     }
 
-
-
-
-
-
-        public static void main(String[] args) {
-//        orpazTest();
-//        test_delete_min();
-//        test_meld();
-        rand_delete_test();
-
-
-
-
+    public static void kMinTest(){
+        //creating one tree heap
+        FibonacciHeap fib = random_insert();
+        while(fib.trees >1)
+            fib.delete(fib.firstRoot);
+        printFibHeap(fib);
+        System.out.println(Arrays.toString(FibonacciHeap.kMin(fib,6)));
 
     }
 
-    /**
-     * print methods - delete before submitting
-     */
+
+    /** print methods */
     public static void printFibHeap(FibonacciHeap fib) {
         System.out.println("Heap's details: ");
         System.out.println("• Is empty? - " + fib.isEmpty());

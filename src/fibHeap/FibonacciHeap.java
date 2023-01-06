@@ -511,7 +511,9 @@ public class FibonacciHeap
     * ###CRITICAL### : you are NOT allowed to change H. 
     */
     public static int[] kMin(FibonacciHeap H, int k)
-    {    
+    {
+        if(k == 0 || H.min == null)
+            return new int[]{};
         int[] arr = new int[k];
         FibonacciHeap kMinHeap = new FibonacciHeap();
         kMinHeap.insert(H.min.getKey()).originPlace = H.min;
@@ -533,19 +535,39 @@ public class FibonacciHeap
         kMinHeap.deleteMin();
         // inserting its children (if it has children)
         FibonacciHeap.HeapNode child = currentNode.originPlace.child;
-        if (child == null)
-            return;
-        FibonacciHeap.HeapNode start = child;
-        do{
-            nextVal = child.getKey();
-            kMinHeap.insert(nextVal).originPlace = child;
-            child = child.next;
-        } while(child != start);
+        if (child != null) {
+            FibonacciHeap.HeapNode start = child;
+            do {
+                nextVal = child.getKey();
+                kMinHeap.insert(nextVal).originPlace = child;
+                child = child.next;
+            } while (child != start);
+        }
         // running recursively on the new kMinHeap and the updated arr and index
         kMinRec(H, arr, kMinHeap , index);
     }
 
-
+    public static void printHeap(FibonacciHeap fib, FibonacciHeap.HeapNode root){
+        printHeapRec(fib, root, root,0);
+    }
+    private static void printHeapRec(FibonacciHeap fib,FibonacciHeap.HeapNode startNode, FibonacciHeap.HeapNode currentNode, int level){
+        if (currentNode == null)
+            return;
+        for (int i = 0; i < level-1; i++)
+            System.out.print("| ");
+        if (level !=0)
+            System.out.print("|_");
+        else
+            System.out.println("");
+        System.out.print(currentNode.getKey());
+        if (currentNode.mark)
+            System.out.println("*");
+        else
+            System.out.println("");
+        printHeapRec(fib,currentNode.child,currentNode.child,level+1);
+        if (currentNode.next != startNode)
+            printHeapRec(fib,startNode,currentNode.next,level);
+    }
     
    /**
     * public class HeapNode
