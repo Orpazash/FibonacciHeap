@@ -547,28 +547,6 @@ public class FibonacciHeap
         kMinRec(H, arr, kMinHeap , index);
     }
 
-    public static void printHeap(FibonacciHeap fib, FibonacciHeap.HeapNode root){
-        printHeapRec(fib, root, root,0);
-    }
-    private static void printHeapRec(FibonacciHeap fib,FibonacciHeap.HeapNode startNode, FibonacciHeap.HeapNode currentNode, int level){
-        if (currentNode == null)
-            return;
-        for (int i = 0; i < level-1; i++)
-            System.out.print("| ");
-        if (level !=0)
-            System.out.print("|_");
-        else
-            System.out.println("");
-        System.out.print(currentNode.getKey());
-        if (currentNode.mark)
-            System.out.println("*");
-        else
-            System.out.println("");
-        printHeapRec(fib,currentNode.child,currentNode.child,level+1);
-        if (currentNode.next != startNode)
-            printHeapRec(fib,startNode,currentNode.next,level);
-    }
-    
    /**
     * public class HeapNode
     * 
