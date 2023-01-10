@@ -377,6 +377,8 @@ public class FibonacciHeap
     */
     public void decreaseKey(HeapNode x, int delta)
     {
+        if (delta == 0)
+            return;
         x.key = x.key-delta;
         // if x is not the root (if it is the root - there wasn't violation
         // ot if there was a violation of the heap rule - doing cascading cut
@@ -424,16 +426,16 @@ public class FibonacciHeap
         parent.rank--;
 
         // if nodeToCut == parent.child
-        if (nodeToCut == parent.child)
-            // check if it has other children
+        // updating parent.child
+        if (nodeToCut == parent.child) {
+            // check if it has other children - if so updating the parent's child
             if (nodeToCut.next == nodeToCut)
                 parent.child = null;
             else
                 parent.child = nodeToCut.next;
-
-        if (nodeToCut.next == nodeToCut)
-            nodeToCut.prev.next = nodeToCut.prev;
-        else {
+        }
+        // updating the next and prev of the other nodes in the level
+        if (nodeToCut.next != nodeToCut){
             nodeToCut.prev.next = nodeToCut.next;
             nodeToCut.next.prev = nodeToCut.prev;
         }
