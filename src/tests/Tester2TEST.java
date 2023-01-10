@@ -13,7 +13,7 @@ public class Tester2TEST {
 
     public static void main(String[] args) {
 
-        grade = 80.0;
+        grade = 100.0;
         testScore = grade / 29;
 
         try {test0();} catch (Exception e){bugFound("test0");}

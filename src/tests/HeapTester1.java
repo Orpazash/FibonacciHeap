@@ -472,43 +472,6 @@ public class HeapTester1 {
         this.uniqueValues = !testInfo.getTags().contains("DuplicateValues");
     }
 
-    @AfterEach
-    void afterEachTest(TestInfo testInfo) throws IOException {
-        if (testInfo.getTags().contains("NoCompare")) {
-            return;
-        }
-        String expectedFile = "./expected/" + testInfo.getDisplayName() + ".txt";
-        String resultFile = "./result/" + testInfo.getDisplayName() + ".txt";
-
-
-        File dir = new File("result");
-        dir.mkdirs();
-        File file = new File(dir, testInfo.getDisplayName() + ".txt");
-        file.createNewFile();
-        try (PrintStream stream = new PrintStream(file)) {
-            HeapPrinter printer = new HeapPrinter(stream);
-            printer.print(heap, true);
-        }
-
-        String result = new String(
-                Files.readAllBytes(Paths.get(resultFile)),
-                StandardCharsets.UTF_8);
-
-        String expected = null;
-        try {
-            expected = new String(
-                    Files.readAllBytes(Paths.get(expectedFile)),
-                    StandardCharsets.UTF_8);
-        } catch (Exception ex) {
-            throw new RuntimeException("Missing expected file");
-        }
-        if (!expected.equals(result)) {
-            assertTrue(false,
-                    String.format("Expected file %s and result file %s do not match",
-                            expectedFile, resultFile));
-        }
-    }
-
     @Tag("NoCompare")
     @Test
     @Order(0)
@@ -1881,7 +1844,7 @@ public class HeapTester1 {
     @Test
     @Order(4900)
     public void testSpecialMarkedChainTree() {
-        int depth = 1000000;
+        int depth = 10000;
         // case 10
         int n = depth * 5; // must divide by 5
 

@@ -511,11 +511,42 @@ public class FibonacciHeap
     * ###CRITICAL### : you are NOT allowed to change H. 
     */
     public static int[] kMin(FibonacciHeap H, int k)
-    {    
-        int[] arr = new int[100];
+    {
+        if(k == 0 || H.min == null)
+            return new int[]{};
+        int[] arr = new int[k];
+        FibonacciHeap kMinHeap = new FibonacciHeap();
+        kMinHeap.insert(H.min.getKey()).originPlace = H.min;
+        int[] index = new int[1];
+        kMinRec(H, arr, kMinHeap,index);
         return arr; // should be replaced by student code
     }
-    
+
+    private static void kMinRec(FibonacciHeap H, int[] arr,
+                                FibonacciHeap kMinHeap, int[] index){
+        //if entered all the k keys to the array
+        if (index[0] == arr.length)
+            return;
+        // value to enter to the list and to delete from the kMinHeap
+        HeapNode currentNode = kMinHeap.min;
+        int nextVal = currentNode.getKey();
+        arr[index[0]] = nextVal;
+        index[0]++;
+        kMinHeap.deleteMin();
+        // inserting its children (if it has children)
+        FibonacciHeap.HeapNode child = currentNode.originPlace.child;
+        if (child != null) {
+            FibonacciHeap.HeapNode start = child;
+            do {
+                nextVal = child.getKey();
+                kMinHeap.insert(nextVal).originPlace = child;
+                child = child.next;
+            } while (child != start);
+        }
+        // running recursively on the new kMinHeap and the updated arr and index
+        kMinRec(H, arr, kMinHeap , index);
+    }
+
    /**
     * public class HeapNode
     * 
@@ -532,6 +563,7 @@ public class FibonacciHeap
         public HeapNode next;
         public HeapNode prev;
         public HeapNode parent;
+        public HeapNode originPlace;
 
     	public HeapNode(int key) {
             this.key = key;
@@ -541,6 +573,7 @@ public class FibonacciHeap
             this.next = this;
             this.prev = this;
             this.parent = null;
+            this.originPlace = null;
     	}
 
     	public int getKey() {
